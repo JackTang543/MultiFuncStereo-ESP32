@@ -2,7 +2,7 @@
 
 bool playorstop = 0;
 
-extern uint16_t main_fm_freq;
+
 
 void sig_app_callBack_Btn(uint16_t key_id,sGBD_TRIG_t key_event){
     //TouchCenter
@@ -55,8 +55,8 @@ void sig_app_callBack_Btn(uint16_t key_id,sGBD_TRIG_t key_event){
             //Serial.printf("SW%u_LONG_PRESSED\r\n",key_id);
         }
         else if(key_event == sGBD_TRIG_2PRS){
-            sBT401_SendCommand("CM",5);
-            //sBT401_SendCommand("CS",0);
+            //sBT401_SendCommand("CM",5);
+            sBT401_SendCommand("CS",0);
             //Serial.printf("SW%u_DOUBLE_PRESSED\r\n",key_id);
         }
     }
@@ -70,10 +70,10 @@ uint8_t page = 0;
 void sig_app_callBack_EC(uint8_t EC_id,sEC_EV_t EC_event){
     if(EC_id == 1){
         if(EC_event == sEC_EV_UP){
-            main_fm_freq+=10;
+            
             //sigAppMENU_UpdownVolume(1);
         }else if(EC_event == sEC_EV_DOWN){
-            main_fm_freq-=10;
+            
             //sigAppMENU_UpdownVolume(0);
         }
     }

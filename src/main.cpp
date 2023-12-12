@@ -1,56 +1,38 @@
 /*  
  * ********************************
- * * MultiFuncStereo 程序部分 v1.1 *
+ * * MultiFuncStereo 程序部分 v1.0 *
  * ********************************
- *
+ * 更新日志:
+ *  1.0: 初代版本
  * 
+ * 
+ * ********************************
+ * -by SIGHTSEER. 2023.12.12 in HNIP9607
  * 
 */
 
 
-
 #include <Arduino.h>
-#include "sig_btn_driver.h"
 
+//这是按键驱动
+#include "sig_btn_driver.h"
+//用于GPIO和外设的初始化
 #include "sig_app_init.h"
+//管理所有事件的回调函数
 #include "sig_app_callback.h"
+//用于配置FreeRTOS
 #include "sig_app_os.h"
+//管理菜单
 #include "sig_app_menu.h"
 
 #include "sig_VFD1602.h"
 
-#include <Wire.h>
-#include <radio.h>
-#include <TEA5767.h>
-
-    /// The band that will be tuned by this sketch is FM.
-#define FIX_BAND RADIO_BAND_FM
-
-/// The station that will be tuned by this sketch is 89.30 MHz.
-uint16_t main_fm_freq = 9180;
-
-TEA5767 radio;    // Create an instance of Class for Si4703 Chip
-
-uint8_t test1;
-byte test2;
-
-void mainsett(){
-    radio.setBandFrequency(FIX_BAND, main_fm_freq); 
-}
 
 
 void setup() {
     
 
     sigApp_InitAllGPIOs();
-
-    radio.init();
-    radio.debugEnable();
-    radio.setBandFrequency(FIX_BAND, main_fm_freq); // hr3 nearby Frankfurt in Germany
-  radio.setVolume(1);
-  //radio.setMute(true);
-  radio.setMono(false);
-
     sigApp_InitAllPeph();
 
     
