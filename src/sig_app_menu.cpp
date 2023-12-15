@@ -26,7 +26,50 @@ typedef struct {
 
 menu_main_music_info_t menu_main_music_info;
 
+void ShowBattPercentOn(uint8_t x,uint8_t y){
+    //实现4段电量效果
+    uint16_t batt_mvolt = (uint16_t)sINA219_GetBatVolt_mV();
+    //uint16_t batt_mvolt = 8000;
+    if(batt_mvolt < 7000){
+        //电池欠压,闪烁
+        if((millis() % 1000) < 500){
+            sVFD1602_CGRAM_WriteChar(x,y,0x01);
+        }else{
+            sVFD1602_CGRAM_WriteChar(x,y,' ');
+        }   
+    }
+    else if(batt_mvolt >= 7000 && batt_mvolt <= 7467){
+        sVFD1602_CGRAM_WriteChar(x,y,0x02);
+    }
+    else if(batt_mvolt > 7467 && batt_mvolt <= 7934){
+        sVFD1602_CGRAM_WriteChar(x,y,0x03);
+    }
+    else if(batt_mvolt > 7934 && batt_mvolt <= 8301){
+        sVFD1602_CGRAM_WriteChar(x,y,0x04);
+    }
+    else if(batt_mvolt > 8301){
+        sVFD1602_CGRAM_WriteChar(x,y,0x05);
+    }
+}
+
+void ShowBattInfo(){
+    if(sTP5100_GetStatus() == SIG_TP5100_CHRG){
+        sVFD1602_CGRAM_WriteString(0,0,"CHRG",0);
+    }else{
+        sVFD1602_CGRAM_WriteString(0,0,"USE",0);
+    }
+
+    sVFD1602_CGRAM_WriteString(10,0,"BatW:",0);
+    sVFD1602_CGRAM_WriteNumber(13,0,(uint16_t)sINA219_GetPower_mW());
+
+    sVFD1602_CGRAM_WriteString(0,1,"BatV:",0);
+    sVFD1602_CGRAM_WriteNumber(5,1,sINA219_GetBatVolt_mV());
+    sVFD1602_CGRAM_WriteString(10,1,"BatI:",0);
+    sVFD1602_CGRAM_WriteNumber(13,1,(uint16_t)sINA219_GetCurr_mA());
+}
+
 void MenuShow_MainMusic(){
+    ShowBattPercentOn(15,0);
     //处在TF卡/U盘模式下时
     if(menu_main_music_info.playmode == 2 || menu_main_music_info.playmode == 3){
             //显示已播放时间
@@ -39,8 +82,9 @@ void MenuShow_MainMusic(){
         }else{
            sVFD1602_CGRAM_WriteNumber(x1 + 2,0,menu_main_music_info.playedtime % 60);
         }
+        sVFD1602_CGRAM_WriteString(x1 + 4,0,"->",0);
         //显示总时长
-        uint8_t x2 = 7; //这是显示的起始位置
+        uint8_t x2 = 6; //这是显示的起始位置
         sVFD1602_CGRAM_WriteNumber(x2 + 0,0,menu_main_music_info.alltime / 60);
         sVFD1602_CGRAM_WriteUserChar(x2 + 1,0,SymbolFont[10]);
         if((menu_main_music_info.alltime % 60) < 10){
@@ -50,7 +94,7 @@ void MenuShow_MainMusic(){
             sVFD1602_CGRAM_WriteNumber(x2 + 2,0,menu_main_music_info.alltime % 60);
         }
         //显示工作模式
-        uint8_t x3 = 13;
+        uint8_t x3 = 10;
         if(menu_main_music_info.playmode == 1){
             sVFD1602_CGRAM_WriteString(x3 + 0,0,(char*)" BT",0);
         }else if(menu_main_music_info.playmode == 2){
@@ -154,9 +198,9 @@ void sigAppMENU_UpdownVolume(uint8_t updown){
 void sigAppMENU_UpdownBrightness(uint8_t updown){
     //up
     if(updown){
-        menu_main_music_info.brightness >= 100?menu_main_music_info.brightness = 100:menu_main_music_info.brightness+=10;
+        menu_main_music_info.brightness >= 100?menu_main_music_info.brightness = 100:menu_main_music_info.brightness+=20;
     }else{
-        menu_main_music_info.brightness <= 10?menu_main_music_info.brightness = 10:menu_main_music_info.brightness-=10;
+        menu_main_music_info.brightness <= 20?menu_main_music_info.brightness = 20:menu_main_music_info.brightness-=20;
     }
     sigAppMENU_SetBrightness(menu_main_music_info.brightness);
     sVFD1602_BrightnessSet(menu_main_music_info.brightness);
@@ -198,15 +242,33 @@ uint8_t sigAppMENU_InstantEventHandler(){
         sVFD1602_CGRAM_WriteString(0,0,(char*)"Detect  Udisk",0);
         sVFD1602_CGRAM_WriteString(9,1,(char*)"REMOVED",0);
     }
-    if(InstantEventFlag == InstantEventFlag_ChangeVol){
+    else if(InstantEventFlag == InstantEventFlag_ChangeVol){
         sVFD1602_CGRAM_WriteString(0,0,(char*)"Volume:",0);
-        sVFD1602_CGRAM_WriteNumber(12,1,menu_main_music_info.volume);
-        sVFD1602_CGRAM_WriteString(15,1,(char*)"%",0);
+        sVFD1602_CGRAM_WriteNumber(12,1,uint8_t((float)menu_main_music_info.volume * 3.334f));
+        if(uint8_t((float)menu_main_music_info.volume * 3.334f) < 10){
+            sVFD1602_CGRAM_WriteString(13,1,(char*)"%",0);
+        }
+        else if(uint8_t((float)menu_main_music_info.volume * 3.334f) == 100){
+            sVFD1602_CGRAM_WriteString(15,1,(char*)"%",0);
+        }
+        else if(uint8_t((float)menu_main_music_info.volume * 3.334f) > 10 &&  \
+                uint8_t((float)menu_main_music_info.volume * 3.334f) < 100){
+            sVFD1602_CGRAM_WriteString(14,1,(char*)"%",0);
+        }
+        
     }
-    if(InstantEventFlag == InstantEventFlag_ChangeBrightness){
+    else if(InstantEventFlag == InstantEventFlag_ChangeBrightness){
         sVFD1602_CGRAM_WriteString(0,0,(char*)"Brightness:",0);
         sVFD1602_CGRAM_WriteNumber(12,1,menu_main_music_info.brightness);
-        sVFD1602_CGRAM_WriteString(15,1,(char*)"%",0);
+        if(menu_main_music_info.brightness != 100){
+            sVFD1602_CGRAM_WriteString(14,1,(char*)"%",0);
+        }else{
+            sVFD1602_CGRAM_WriteString(15,1,(char*)"%",0);
+        }
+        
+    }
+    else if(InstantEventFlag == InstantEventFlag_ShowBattStatus){
+        ShowBattInfo();
     }
     
     if(InstantEventFlag != InstantEventFlag_Null){

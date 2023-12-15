@@ -5,7 +5,8 @@
 
 #include "sig_BT401.h"
 #include "sig_VFD1602.h"
-
+#include "sig_ina219.h"
+#include "sig_tp5100.h"
 
 typedef enum{
     MENU_MAIN_FUNC_MUSIC = 0,
@@ -22,7 +23,8 @@ typedef enum{
     InstantEventFlag_BTLink,
     InstantEventFlag_BTNoLink,
     InstantEventFlag_ChangeVol,
-    InstantEventFlag_ChangeBrightness
+    InstantEventFlag_ChangeBrightness,
+    InstantEventFlag_ShowBattStatus
 }InstantEventFlag_t;
 
 

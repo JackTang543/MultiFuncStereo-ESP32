@@ -89,6 +89,7 @@ void sVFD1602_UpdateScreenByCGRAM(void);
 void sVFD1602_CGRAM_WriteUserChar(uint8_t x,uint8_t y,sCGRAM_Char_t user_char);
 void sVFD1602_CGRAM_WriteNumber(uint8_t x,uint8_t y,uint16_t num);
 void sVFD1602_CGRAM_WriteString(uint8_t x,uint8_t y,char* str,uint8_t reverse);
+void sVFD1602_CGRAM_WriteChar(uint8_t x,uint8_t y,char c);
 void sVFD1602_CGRAM_Clear(void);
 
 #endif

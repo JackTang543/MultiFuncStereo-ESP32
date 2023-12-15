@@ -89,7 +89,7 @@ void sigOS_Create_AllTask(void){
     xTimerStart(ECTimer ,0);
     xTimerStart(BTRxCheck ,0);
     xTimerStart(BT_0S5_Tx ,0);
-    xTimerStart(VFD_Update ,0);
+    //xTimerStart(VFD_Update ,0);
                                           
 }
 

@@ -302,6 +302,14 @@ void sVFD1602_CGRAM_WriteString(uint8_t x,uint8_t y,char* str,uint8_t reverse){
     }
 }
 
+void sVFD1602_CGRAM_WriteChar(uint8_t x,uint8_t y,char c){
+    CGRAM_Buffer[x][y][0] = (CharFont[c].CharByte0);
+    CGRAM_Buffer[x][y][1] = (CharFont[c].CharByte1);
+    CGRAM_Buffer[x][y][2] = (CharFont[c].CharByte2);
+    CGRAM_Buffer[x][y][3] = (CharFont[c].CharByte3);
+    CGRAM_Buffer[x][y][4] = (CharFont[c].CharByte4);
+}
+
 //上传CGRAM到屏幕
 void sVFD1602_UpdateScreenByCGRAM(){
     //写亮度

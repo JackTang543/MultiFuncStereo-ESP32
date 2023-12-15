@@ -28,8 +28,8 @@ void sigApp_InitAllGPIOs(void){
     attachInterrupt(digitalPinToInterrupt(Encoder1aPIN),sEC_1a_falling,FALLING);
     attachInterrupt(digitalPinToInterrupt(Encoder1bPIN),sEC_1b_falling,FALLING);
     //初始化TP5100充电芯片信号输入
-    //pinMode(TP5100StdbyPIN,INPUT_PULLUP);
-    //pinMode(TP5100ChrgPIN ,INPUT_PULLUP);
+    pinMode(TP5100StdbyPIN,INPUT_PULLUP);
+    pinMode(TP5100ChrgPIN ,INPUT_PULLUP);
     //初始化I2C总线
     
     //初始化BT401使能

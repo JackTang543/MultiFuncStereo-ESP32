@@ -71,10 +71,10 @@ void sig_app_callBack_EC(uint8_t EC_id,sEC_EV_t EC_event){
     if(EC_id == 1){
         if(EC_event == sEC_EV_UP){
             
-            //sigAppMENU_UpdownVolume(1);
+            sigAppMENU_UpdownVolume(1);
         }else if(EC_event == sEC_EV_DOWN){
             
-            //sigAppMENU_UpdownVolume(0);
+            sigAppMENU_UpdownVolume(0);
         }
     }
 }

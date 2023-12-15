@@ -24,6 +24,8 @@
 #define BT401_TX          (0)
 #define BT401_EN          (7)
 //VFD1602显示屏TX就是UART0的TX
+//ADC
+#define AUDIO_ADC_PIN     (3)
 
 
 
